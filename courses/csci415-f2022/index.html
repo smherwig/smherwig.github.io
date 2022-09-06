@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>CSCI 415/515 Fall 2022</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Latest compiled and minified CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container pt-5">
+      <h1 class="display-3 text-center">CSCI 415/515 - Fall 2022<br/>
+        <small>Systems Programming</small><br/>
+      </h1>
+      <hr/>
+
+      <h1 class="display-4"><a href="syllabus.html">Syllabus</a></h1>
+
+      <h1 class="display-4">General Course Information</h1>
+
+      <table class="table table-striped table-sm">
+        <tbody>
+          <tr>
+            <td><strong>Instructor</strong></td>
+            <td><a href="https://www.cs.wm.edu/~smherwig/index.html">Stephen Herwig</a></td>
+            <td><strong>Office Hours:</strong><br/>
+              WMF 11:00am - 12:00pm, or by appt.<br/>
+              <a href="https://www.wm.edu/about/visiting/campusmap/location/mcglothlin-street.php"> McGlothlin-Street Hall</a><br/>
+              Room #136
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Teaching Assistant</strong></td>
+            <td>Collin MacDonald<br/>
+              <a href="mailto:cmacdonald01@wm.edu">cmacdonald01@wm.edu</a><br/>
+            </td>
+            <td>
+              TuTh, 10:00am -11:30pm<br/>
+              <a href="https://www.wm.edu/about/visiting/campusmap/location/mcglothlin-street.php"> McGlothlin-Street Hall</a><br/>
+              Room #139
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Time/Place</strong></td>
+            <td>
+              WMF 10:00am - 10:50am<br/>
+              <a href="https://www.wm.edu/about/visiting/campusmap/location/blow.php">Blow Memorial Hall</a><br/>
+              Room #331
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><strong>Final Exam</strong></td>
+            <td>Thur 12/15: 2:00pm - 5:00pm</td>
+            <td>
+              <ul>
+                <li>take-home</li>
+                <li>open-book; open-Internet</li>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h1 class="display-4">Roadmap</h1>
+
+      <table class="table table-striped table-sm">
+        <thead>
+          <th>Readings</th>
+          <th>Project</th>
+          <th>Notes</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong><a href="warmup.html">Warm-up</a></strong></td>
+            <td colspan="2"class="text-end text-secondary"><strong>Weeks 1 and 2 (Wed 8/31 - Fri 9/9)</strong></td>
+          </tr>
+          <tr>
+            <td>
+              The Linux Programming Interface:
+              <ul>
+                <li>Ch 1: History and Standards</li>
+                <li>Ch 2: Fundamental Concepts</li>
+                <li>Ch 3: Systems Programming Concepts</li>
+                <li>Ch 7: Memory Allocation</li>
+                <li>Appendix B: Parsing Command-Line Options</li>
+              </ul>
+            </td>
+            <td>
+              <a href="sgrep/index.html">p1: sgrep</a><br/>
+              Due: Mon 9/12 @ 7:00am
+            </td>
+            <td>
+              <ul>
+                <li>Mon 9/5: No class (Labor Day)</li>
+              </ul>
+            </td>
+          </tr>
+
+          <tr>
+            <td><strong>File I/O and File Systems</strong></td>
+            <td colspan="2"class="text-end text-secondary"><strong>Weeks 3 and 4 (Mon 9/12 - Fri 9/23)</strong></td>
+          </tr>
+          <tr>
+            <td>
+              The Linux Programming Interface:
+              <ul>
+                <li>Ch 4: File I/O: The Universal I/O Model</li>
+                <li>Ch 5: File I/O: Further Details</li>
+                <li>Ch 13: File I/O Buffering</li>
+                <li>Ch 14: File Systems</li>
+                <li>Ch 15: File Attributes</li>
+                <li>Ch 18: Directories and Links</a>
+              </ul>
+            </td>
+            <td>
+              Due: TBD
+              <!--NOTYET
+              <a href="yaar.html">yaar</a><br/>
+              -->
+            </td>
+            <td>
+              <ul>
+                <li>Mon 9/12: Course drop/add deadline</li>
+              </ul>
+            </td>
+          </tr>
+          
+          <tr>
+            <td><strong>Signals and Timers</strong></td>
+            <td colspan="2"class="text-end text-secondary"><strong>Weeks 5 and 6 (Mon 9/26 - Fri 10/7)</strong></td>
+          </tr>
+          <tr>
+            <td>
+              The Linux Programming Interface:
+              <ul>
+                <li>Ch 10: Time</li>
+                <li>Ch 20: Signals: Fundamental Concepts</li>
+                <li>Ch 21: Signals: Handlers</li>
+                <li>Ch 22: Signals: Advanced Features</li>
+                <li>Ch 23: Timers and Sleeping</li>
+              </ul>
+            </td>
+            <td>
+              Due: TBD
+              <!--NOTYET
+              <a href="mcron.html">mcron</a><br/>
+              -->
+            </td>
+            <td>
+            </td>
+          </tr>
+
+          <tr>
+            <td><strong>Processes and Pipes</strong></td>
+            <td colspan="2"class="text-end text-secondary"><strong>Weeks 7 and 8 (Mon 10/10 - Fri 10/21)</strong></td>
+          </tr>
+          <tr>
+            <td>
+              The Linux Programming Interface:
+              <ul>
+                <li>Ch 6: Processes</li>
+                <li>Ch 24: Process Creation</li>
+                <li>Ch 25: Process Termination</li>
+                <li>Ch 26: Monitoring Child Processes</li>
+                <li>Ch 27: Program Execution</li>
+                <li>Ch 28: Process Creation and Program Execution in More Detail</li>
+                <li>Ch 43: Interprocess Communication Overview</li>
+                <li>Ch 44: Pipes and FIFOs</li>
+              </ul>
+            </td>
+            <td>
+              Due: TBD
+              <!--NOTYET
+              <a href="bsh.html">bsh</a><br/>
+              -->
+            </td>
+            <td>
+              <ul>
+                <li>Fri 10/14: No class (Fall Break)</li>
+              </ul>
+            </td>
+          </tr>
+          
+          <tr>
+            <td><strong>Sockets</strong></td>
+            <td colspan="2"class="text-end text-secondary"><strong>Weeks 9 and 10(Mon 10/24 - Fri 11/4)</strong></td>
+          </tr>
+          <tr>
+            <td>
+              The Linux Programming Interface:
+              <ul>
+                <li>Ch 56: Sockets Introduction</li>
+                <li>Ch 58: Sockets: Fundamentals of TCP/IP Networks</li>
+                <li>Ch 59: Sockets: Internet Domains</li>
+                <li>Ch 60: Sockets: Server Design</li>
+              </ul>
+            </td>
+            <td>
+              Due: TBD
+              <!--NOTYET
+              <a href="adns.html">adns</a><br/>
+              -->
+            </td>
+            <td>
+              <ul>
+                <li>Mon 10/31: Withdraw deadline
+              </ul>
+            </td>
+          </tr>
+
+          <tr>
+            <td><strong>Event-Driven I/O</strong></td>
+            <td colspan="2"class="text-end text-secondary"><strong>Weeks 11, 12 and 13 (Mon 11/7 - Fri 11/25)</strong></td>
+          </tr>
+          <tr>
+            <td>
+              The Linux Programming Interface:
+              <ul>
+                <li>Ch 57: Sockets: UNIX Domain</li>
+                <li>Ch 63: Alternative I/O Models</li>
+              </ul>
+            </td>
+            <td>
+              Due: TBD
+              <!--NOTYET
+              <a href="mbus.html">mbus</a><br/>
+              -->
+            </td>
+            <td>
+              <ul>
+                <li>Mon 11/21: Remote class</li>
+                <li>Wed 11/23: No class (Thanksgiving Break)</li>
+                <li>Fri 11/25: No class (Thanksgiving Break)</li>
+              </ul>
+            </td>
+          </tr>
+
+          <tr>
+            <td><strong>Threads</strong></td>
+            <td colspan="2"class="text-end text-secondary"><strong>Weeks 14 and 15 (Mon 11/28 - Fri 12/9)</strong></td>
+          </tr>
+          <tr>
+            <td>
+              The Linux Programming Interface:
+              <ul>
+                <li>Ch 29: Threads: Introduction</li>
+                <li>Ch 30: Threads: Synchronization</li>
+                <li>Ch 31: Threads: Thread Safety and Per-Thread Storage</li>
+                <li>Ch 32: Threads: Thread Cancellation</li>
+                <li>Ch 33: Threads: Further Details</li>
+              </ul>
+            </td>
+            <td>
+              
+              Due: TBD
+              <!--
+              <a href="revlookup.html">revlookup</a><br/>
+              -->
+            </td>
+            <td>
+              <ul>
+                <li>Fri 12/9: Last day of classes</li>
+              </ul>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+
+
+    </div>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> 
+  </body>
+</html>

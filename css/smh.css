@@ -1,0 +1,33 @@
+/* William & Mary colors */
+
+.smh-color-gold {
+    background-color: #004d38;
+    text-color: white;
+}
+
+a.smh-color-gold {
+    color: white;
+}
+
+.smh-color-green {
+    background-color: #b79257;
+    text-color: white;
+}
+
+a.smh-color-green {
+    color: white;
+}
+
+.smh-color-blue {
+    background-color: #3d4d94;
+    text-color: white;
+}
+
+a.smh-color-blue {
+    color: white;
+}
+
+
+a.active {
+    background-color: #b79257;
+}

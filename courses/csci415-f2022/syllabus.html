@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Syllabus</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Latest compiled and minified CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container pt-5">
+
+      <h1 class="display-3 text-center">
+        <a href="index.html">CSCI 415/515 - Fall 2022</a><br/>
+        <small>Systems Programming</small><br/>
+        <small>Syllabus</small>
+      </h1>
+      <hr/>
+
+      <h1 class="display-4">Course Description</h1>
+      <p>
+      This course will help you develop a relatively deep knowledge of the
+      Linux/Unix userspace programming environment, and how a userspace process
+      interacts with the operating system kernel.  Topics covered include:
+      </p>
+
+      <ul>
+        <li>File I/O and file systems</li>
+        <li>Signals</li>
+        <li>Process management</li>
+        <li>Network programming</li>
+        <li>Event-driven I/O</li>
+        <li>Multi-threaded programming</li>
+      </ul>
+
+      <p>
+      By the end of this course, you will have a better understanding of how
+      various systems and systems-level tools - such as the shell, a cron
+      service, a key-value server, and a chat server - are implemented at the
+      programmatic level.
+      </p>
+
+      <p>
+      This course is programming-intensive: you will develop several projects
+      that incorporate the above topics.  You will primarily use the C
+      programming language to implement these projects.  Time-permitting, the
+      course may also cover shell scripting and the Rust programming language.
+      </p>
+
+      <h1 class="display-4">Prerequisites</h1>
+      <ul>
+        <li>CSCI 304: Computer Organization</li>
+      </ul>
+
+      <h1 class="display-4">Mechanics</h1>
+      <p>
+      Generally, we will use 
+      <a href="https://www.gradescope.com/courses/416439">gradescope</a>
+      for project submissions, and 
+      <a href="https://blackboard.wm.edu/ultra/courses/_23716_1/cl/outline">Blackboard</a> 
+      for the exam submission.  We will also use Blackboard for any online
+      discussions, for posting any lecture recordings, as well as for tracking
+      grades.  Otherwise, the course materials will be published via this
+      website.
+      </p>
+
+      <h1 class="display-4">Equipment</h1>
+      <p>
+      You are free to develop the projects using whatever setup you like.  The
+      official setup is of course the gradescope environment, which is a
+      standard Ubuntu Linux 22.04 system.  The projects themselves have very few
+      dependencies, so any recent Linux distribution will likely suffice.
+      <p>
+
+      <p>
+      If you wish, you can develop your projects on the CS department's Linux
+      <a href="https://www.cs.wm.edu/~tadavis/remoteaccess.html">lab</a>,
+      which allows for remote access.  If you do not already have an account,
+      please follow the <a href="https://www.cs.wm.edu/~tadavis/remoteaccess.html">instructions</a>
+      for requesting access.
+      </p>
+
+
+
+      <h1 class="display-4">Reading</h1>
+      <p>
+      The course textbook is:
+      </p>
+      <p>
+      <div class="ms-4">
+        <a href="https://nostarch.com/tlpi">The Linux Programming Interface</a><br/>
+        Michael Kerrisk<br/>
+        No Starch Press, October 2010, ISBN-13: 9781593272203<br/>
+        (<a href="https://wm.primo.exlibrisgroup.com/discovery/fulldisplay?docid=alma991033659963203196&context=L&vid=01COWM_INST:01COWM_WM_NEWUI&lang=en&search_scope=WMCWF&adaptor=Local%20Search%20Engine&tab=Everything&query=any,contains,linux%20programming%20interface">free online access</a> via William &amp; Mary library)
+      </div>
+      </p>
+
+      <p>
+      Time-permitting, I will also include "crash courses" in shell scripting
+      and the Rust programming language.
+      </p>
+
+      <p>
+      For shell scripting, I will reference:
+      </p>
+      <p>
+      <div class="ms-4 mb-2">
+        <a href="https://www.pearson.com/en-us/subject-catalog/p/Kochan-Shell-Programming-in-Unix-Linux-and-OS-X-The-Fourth-Edition-of-Unix-Shell-Programming-4th-Edition/P200000000382/9780134496009">Shell Programming in Unix, Linux and OS X, 4th edition</a><br/>
+        Stephen Kochan<br/>
+        Addison-Wesley Professional, 2016, ISBN: 0-13-449669-8<br/>
+        (<a href="https://wm.primo.exlibrisgroup.com/discovery/fulldisplay?docid=alma991033536048803196&context=L&vid=01COWM_INST:01COWM_WM_NEWUI&lang=en&search_scope=WMCWF&adaptor=Local%20Search%20Engine&tab=Everything&query=any,contains,Shell%20Programming&offset=0">free online access</a> via William &amp; Mary library)
+      </div>
+      </p>
+
+      <p>
+      For Rust, I will reference the
+      <a href="https://doc.rust-lang.org/book/title-page.html">official online book</a>
+      </p>
+
+      <p>
+      If you need to brush up on C programming, the following books may be
+      useful:
+      </p>
+
+      <ol>
+        <li>
+          <a href="http://knking.com/books/c2/">C Programming: A Modern Approach (2nd Edition)</a><br/>
+            K. N. King<br/>
+            W. W. Norton &amp; Company, 2008, ISBN-13: 978-0-393-97950-3<br/>
+            <br/>
+        </li>
+        <li>
+            <a
+              href="https://www.pearson.com/en-us/subject-catalog/p/programming-in-c/P200000000380/9780321776419">Programming in C (4th Edition)</a><br/>
+            Stephen Kochan<br/>
+            Addison-Wesly Professional, 2014, ISBN-13: 978-0321776419<br/>
+            (<a
+              href="https://wm.primo.exlibrisgroup.com/discovery/fulldisplay?docid=alma991033096363303196&context=L&vid=01COWM_INST:01COWM_WM_NEWUI&lang=en&search_scope=WMCWF&adaptor=Local%20Search%20Engine&tab=Everything&query=any,contains,Programming%20in%20C&offset=0">free online access</a> via William &amp; Mary library)<br/>
+            <br/>
+        </li>
+        <li>
+          <a href="https://ineasysteps.com/products-page/c-programming-easy-steps-5th-edition-2/">C In Easy Steps (5th Edition)</a><br/>
+            Mike McGrath<br/>
+            In Easy Steps Limited, 2018, ISBN: 9781840788402<br/>
+            <br/>
+        </li>
+        <li>
+            <a href="https://www.oreilly.com/library/view/head-first-c/9781449335649/">Head First C</a><br/>
+            Dave Griffiths and Dawn Griffiths<br/>
+            O'Reilly Media, Inc., 2012, ISBN: 9781449399917<br/>
+            (<a
+              href="https://wm.primo.exlibrisgroup.com/discovery/fulldisplay?docid=alma991033097000703196&context=L&vid=01COWM_INST:01COWM_WM_NEWUI&lang=en&search_scope=WMCWF&adaptor=Local%20Search%20Engine&tab=Everything&query=any,contains,Head%20First%20C&offset=0">free online access</a> via Willia &amp; Mary library)<br/>
+            <br/>
+        </li>
+      </ol>
+
+
+
+
+
+      <h1 class="display-4">Graded Materials and Grading</h1>
+      <p>
+      The course has seven programming assignments and a final exam.  The
+      programming projects account for 70% of your grade, and the final exam
+      the remaining 30%.
+      </p>
+
+      <p>
+      Each programming assignment is scored out of 100 points and carries equal
+      weight.  For undergraduates, I will count only your five best
+      assignments,  and for masters students, your six best assignments. 
+      If a student submits more than this required number, then the student's
+      lowest scoring assignment(s) will be counted as extra credit at 50% of
+      their value.
+      </p>
+
+      <p>
+      For instance, if an undergraduate submits six assignments with scores of:
+      </p>
+
+      <ul>
+        <li>project 0: 90</li>
+        <li>project 1: 60</li>
+        <li>project 2: 75</li>
+        <li>project 3: not submitted</li>
+        <li>project 4: 85</li>
+        <li>project 5: 100</li>
+        <li>project 6: 80</li>
+      </ul>
+
+      <p>
+      and earns an 87 on the final exam, then the student's total final score
+      is:
+      </p>
+
+      <div class="overflow-scroll">
+      \[ \left(\left(\frac{(100 + 90 + 85 + 80 + 75) + (0.5 * 60)}{500} \times 0.7\right) + \left(\frac{87}{100} \times 0.3\right)\right) \times 100\% = 90.5\% \]
+      </div>
+
+      <p>
+      The final score for a master's student with the same set of scores would be:
+      </p>
+
+      <div class="overflow-scroll">
+      \[ \left(\left(\frac{(100 + 90 + 85 + 80 + 75 + 60)}{600} \times 0.7\right) + \left(\frac{87}{100} \times 0.3\right)\right) \times 100\% = 83.3\% \]
+      </div>
+
+      <p> Your final numeric grade will be mapped into a letter grade "on the
+      curve."  Generally, 90 and above is an A; 80 to 89.99 is a B, and so on.
+      I will adjust this scale downward as necessary.
+      </p>
+
+      <p>
+      There are no project extensions: every project is due on its due date.
+      </p>
+
+      <p>
+      Nearly every project will have extra credit points.  I also plan to post
+      one or two smaller assignments which are purely for extra credit toward
+      projects.
+      </p>
+
+      <p>
+      While this is the initial grading plan, I reserve the right to adapt this
+      plan throughout the semester to best meet the needs of the class.
+      </p>
+
+      <h1 class="display-4">Honor Code</h1>
+      <p>
+      William &amp; Mary has a significant tradition in its
+      <a
+        href="https://www.wm.edu/offices/deanofstudents/services/communityvalues/honorcodeandcouncils/index.php">honor
+      code</a>, stated below:
+      </p>
+
+      <div class="m-3">
+        <blockquote class="p-3 bg-secondary text-white rounded">As a member of the William &amp; Mary
+        community, I pledge on my honor not to lie, cheat, or steal, either in
+        my academic or personal life. I understand that such acts violate the
+        Honor Code and undermine the community of trust, of which we are all
+        stewards.
+        </blockquote>
+      </div>
+
+      <p>
+      For this course, programming assignments must be completed on your own.
+      The operative rule is that you may consult with your classmates
+      on general issues about an assignment, but code remains private.  You
+      should neither show another your program source code, nor look at
+      another's source code.  Beyond that, you should adopt an "empty hands"
+      attitude toward collaboration: talk about the project as you wish, but
+      leave the conversation with nothing written.
+      </p>
+
+      <p>There are three corollaries to this rule:</p>
+      <ol>
+        <li>Do not post your code on a public repository.</li>
+        <li>If you copy or lightly adapt source from any site on the Internet,
+          you must cite the URL in a comment.</li>
+        <li>If you come to me or the TA for help, we will not "eyeball debug"
+          your code; that is, for all but the most trivial problems for which
+          you ask for help, we won't look at your source code.  Short of
+          looking at your source code, I'm more than willing to help you design
+          and debug your program.
+        </li>
+      </ol>
+
+      <p>
+      I reserve the right to use an automated service to screen project
+      submissions for cases of code sharing.
+      </p>
+
+
+      <h1 class="display-4">Attendance</h1>
+      <p>
+      I do not take attendance: attendance and classroom participation are not a
+      component of your final grade.  
+      </p>
+
+      <!--
+      <p>
+      To account for common situations that might interfere with a student
+      completing an assignment (such as a cold, job interview, or a conflicting
+      due date with another course), I allow undergraduates to skip two
+      assignments, and masters students one assignment.  If you have an
+      exceptional case where you will be out for an extended period of time,
+      please discuss the matter with me, and I will attempt to adapt the
+      coursework appropriately.
+      </p>
+      -->
+
+      <h1 class="display-4">Accommodations</h1>
+
+      <p>
+      William &amp; Mary accommodates students with disabilities in accordance with
+      federal laws and university policy. Any student who feels they may need
+      an accommodation based on the impact of a learning, psychiatric,
+      physical, or chronic health diagnosis should contact Student
+      Accessibility Services staff at 757-221-2512 or at
+      <a href="mailto:sas@wm.edu">sas@wm.edu</a> to
+      determine if accommodations are warranted and to obtain an official
+      letter of accommodation. For more information, please see
+      <a href="www.wm.edu/sas"> www.wm.edu/sas.</a>
+      </p>
+
+      <p>
+      As per the university's <a
+         href="https://www.wm.edu/about/administration/provost/resources/holidays/religiousguidelines/index.php">guidance</a>,
+      if you have a religious observance that conflicts with a deadline,
+      please notify me as soon as possible so that I can attempt to make an
+      appropriate adjustment.
+      </p>
+
+    </div>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> 
+
+    <!-- MathJax -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  </body>
+</html>

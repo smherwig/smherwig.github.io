@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Parsing Numbers</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- highlight.js
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/foundation.min.css" rel="stylesheet">
+    -->
+    <!-- prism.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-solarizedlight.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autolinker/prism-autolinker.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/command-line/prism-command-line.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css">
+  </head>
+  <body>
+    <div class="container pt-5">
+
+      <h1 class="display-3 text-center">Parsing numbers</h1>
+      <hr/>
+
+      <p>
+      Converting a string to a number is a common programming task.  We will
+      review how to do this task in C, and focus on the common case of parsing
+      integers.
+      </p>
+
+      <h1 class="display-5">Old/Bad way (<tt>atoi</tt>)</h1>
+
+      <p>
+      The old way to parse integers is the library function
+      <a href="https://man7.org/linux/man-pages/man3/atoi.3.html">atoi</a>
+      ("ASCII string to <tt>int</tt>), and its related functions,
+      <a href="https://man7.org/linux/man-pages/man3/atoi.3.html">atol</a>,
+      <a href="https://man7.org/linux/man-pages/man3/atoi.3.html">atoll</a>,
+      and <a
+         href="https://www.man7.org/linux/man-pages/man3/atof.3.html">atof</a>,
+       which convert a string to a <tt>long</tt>, <tt>long long</tt>, and
+       <tt>double</tt>, respectively.
+
+      <p>
+      The following program demonstrates the use of <tt>atoi</tt>:
+      </p>
+
+      <pre data-src="atoi/atoi.c" data-download-link class="line-numbers"></pre>
+
+      <p>
+      You will see <tt>atoi</tt> used a lot in old code, but it has one major
+      and one minor problem:
+      </p>
+
+      <ol>
+        <li><strong>Major</strong>: <tt>atoi</tt> does not detect errors: it returns <tt>0</tt> if
+          its input string does not represent a number, and <tt>-1</tt> if the
+          string does represent a number, but the number is too small or too
+          large to represent as an <tt>int</tt>.</li>
+        <li><strong>Minor</strong>: <tt>atoi</tt> only handles strings that
+          represent decimal numbers; it does not handle hexadecimal or octal
+          representations.</li>
+      </ol>
+
+      To account for these problems, POSIX invented a new family of functions ...
+
+      <h1 class="display-5">New/Good way (<tt>strtol</tt>)</h1>
+
+      <p>
+      The <a href="https://man7.org/linux/man-pages/man3/strtol.3.html">strtol</a>
+      (and it's relatives 
+      <a href="https://man7.org/linux/man-pages/man3/strtol.3.html">strtoll</a> (<tt>long long</tt>),
+      <a href="https://man7.org/linux/man-pages/man3/strtoul.3.html">strtoul</a> (<tt>unsigned long</tt>),
+      <a href="https://man7.org/linux/man-pages/man3/strtoull.3.html">strtoull</a> (<tt>unsigned long long</tt>),
+      )
+      rectifies the deficiencies of <tt>atoi</tt> at the expense of a slightly
+      more complicated interface.
+      </p>
+
+      <p>
+      The following is the same program as before, now written with <tt>strtol</tt>.
+      Note the following:
+      </p>
+
+      <ul>
+        <li><tt>strtol</tt> uses the global <tt>errno</tt> error value to
+          indicate out-of-range errors, as well as a bad base.</li>
+        <li><tt>endptr</tt> is an out-parameter; on return from <tt>strtol</tt>,
+          it points to the first invalid character (loosely, a non-numeric character) in the input string.
+          Thus:
+          <ul>
+            <li>If the string contains only a number, <tt>endptr</tt> points to
+              the string's terminating <tt>NUL</tt> byte.</li>
+            <li>If the input string contains no valid numeric characters, <tt>endptr</tt> points to the
+              start of the string</tt>.</li>
+            <li>Otherwise, if the input string starts with a number and then contains non-numeric characters, <tt>endptr</tt>
+              points to the middle of the string.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <pre data-src="strtol/strtol.c" data-download-link class="line-numbers"></pre>
+
+      <h1 class="display-5">Using <tt>strtol</tt> to parse other integer types</h1>
+
+      <p> Once you get the hang of <tt>strtol</tt>, it's straightforward to use
+      the constants in <tt>limits.h</tt>, and some careful casting, to parse
+      strings to other integer types, such as <tt>int</tt> or <tt>short</tt>.
+      </p>
+
+      <p> The following program wraps <tt>strtol</tt> in a helper function,
+      <tt>mu_str_to_long</tt>, and then demonstrates a function,
+      <tt>mu_str_to_int</tt>, which leverages <tt>mu_str_to_long</tt> to
+      convert a string to an <tt>int</tt>.  In other words,
+      <tt>mu_str_to_int</tt> is a "safe" version of <tt>atoi</tt>.
+
+      <pre data-src="strtoi/strtoi.c" data-download-link class="line-numbers"></pre>
+
+    </div>
+
+    <!-- bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> 
+    <!-- prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/download-button/prism-download-button.min.js"></script> 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autolinker/prism-autolinker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/command-line/prism-command-line.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/file-highlight/prism-file-highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/keep-markup/prism-keep-markup.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
+
+  </body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Make</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- prism.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-solarizedlight.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autolinker/prism-autolinker.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/command-line/prism-command-line.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css">
+  </head>
+  <body>
+    <div class="container pt-5">
+
+      <h1 class="display-3 text-center">Make</h1>
+      <hr/>
+
+      <h1 class="display-4">Compilation by hand</h1>
+
+      <p>
+      Let's say we have a single C source file <tt>foo.c</tt>:
+      <p/>
+
+      <pre data-src="ex1/foo.c" data-download-link class="line-numbers"></pre>
+      
+      <p>
+      The typical way to compile the file to an executable, <tt>foo</tt> is:
+      </p>
+
+      <pre class="command-line" data-host="host"><code class="language-bash">
+      gcc -o foo foo.c
+      </code></pre>
+
+      <p>
+      To be more precise, the above invocation of <tt>gcc</tt> invokes the preprocessor to
+      process the <mark>#include</mark>, <mark>#define</mark> and other such directives,
+      compiles <tt>foo.c</tt> to an object file, and then links this object file
+      with a few small stub objects to produce the final executable,
+      <tt>foo</tt>.
+      </p>
+
+      <p>
+      We can additionally specify a few flags to make the compiler stricter.  A
+      common set of flags is:
+      </p>
+
+      <pre class="command-line" data-host="host"><code class="language-bash">
+      gcc -o foo -Wall -Wextra -Werror foo.c
+      </code></pre>
+
+      <p>
+      Now, the compilation aborts, as the <tt>-Wall</tt> option causes the
+      compiler to warn about unused variables, with the <tt>-Werror</tt>
+      converting the warnings to errors:
+      </p>
+
+      <pre class="command-line" data-host="host" data-filter-output="(out) "><code class="language-bash">
+      gcc -o foo -Wall -Wextra -Werror foo.c
+      (out) foo.c: In function ‘main’:
+      (out) foo.c:16:10: error: unused parameter ‘argc’ [-Werror=unused-parameter]
+      (out)  main(int argc, char *argv[])
+      (out)           ^~~~
+      (out) foo.c:16:22: error: unused parameter ‘argv’ [-Werror=unused-parameter]
+      (out) main(int argc, char *argv[])
+      </code></pre>
+
+      <p>
+      We can easily fix the warnings by adding <tt>(void)argc;
+      (void)argv;</tt> at the start of the <tt>main</tt> function; the
+    following is the corrected code: <a href="ex2/foo.c"><span class="badge bg-primary">foo.c</span></a>
+      </p>
+
+      <p>
+      In more detail, the common <tt>-W</tt> (warn) flags are:
+      </p>
+
+      <dl>
+        <dt class="ms-2"><tt>-Wall</tt></dt>
+        <dd class="ms-4">Enable all the warnings about constructions that some users consider
+        questionable, and that are easy to avoid (or modify to prevent the
+        warning)</dd>
+
+        <dt class="ms-2"><tt>-Wextra</tt></dt>
+        <dd class="ms-4">Enable some extra warning flags that are not enabled by
+        <tt>-Wall</tt></dd>
+
+        <dt class="ms-2"><tt>-Werror</tt></dt>
+        <dd class="ms-4">Make all warnings into errors.  With warnings, the compilation will
+        proceed; with errors, the compilation aborts.</dd>
+      </dl>
+
+      <p>
+      If we repeatedly make changes to <tt>foo.c</tt> (or if we 
+      compile several source files as part of our executable), then manually
+      invoking the above <tt>gcc</tt> command is tiresome and error-prone.
+      Hence, Makefiles.
+      </p>
+
+      <h1 class="display-4">A simple Makefile</h1>
+
+      A simple <tt>Makefile</tt> for compiling <tt>foo.c</tt> is:
+
+      <pre data-src="ex2/Makefile" data-download-link class="line-numbers language-makefile"></pre>
+
+      <p>
+      In makefile terminology, the line
+      <code class="language-makefile">foo: foo.c</code> is a rule, where
+      <tt>foo</tt> is the target and <tt>foo.c</tt> is the prerequisite.
+      </p>
+      
+      <p>
+      Each rule then contains one or more commands, called the recipe (here,
+      the <code class="language-bash">gcc -o foo ...</code> line), which specifies how to create the
+      target from the prerequisites.  Note that each line (command) of the
+      recipe must start with a tab character.
+      </p>
+      
+      <p>
+      When we enter the command <kbd>make</kbd>, <tt>make</tt> looks for a file
+      named <tt>Makefile</tt> in the current directory.  <tt>make</tt> then
+      invokes a rule's recipe any time its target is out-of-date with respect
+      to one of its prerequisites (in other words, any time we modify
+      <tt>foo.c</tt>).
+      <p/>
+
+      <h1 class="display-4">Using variables</h1>
+      <p>
+      We can generalize our <tt>Makefile</tt> a little by using
+      variables.  A variable simply stores a string of text that we can use in
+      our rules.
+      </p>
+
+      <pre data-src="ex3/Makefile" data-download-link class="line-numbers language-makefile"></pre>
+
+      <p>
+      Here, <code class="language-makefile">CFLAGS</code> is a variable that
+      holds our compilation flags.  We access the value of the variable by using the syntax
+      <code class="language-makefile">$(CFLAGS)</code>
+      </p>
+
+      <p>
+      The <code class="language-makefile">$@</code> and <code class="language-makefile">$^</code> are
+      <a href="https://www.gnu.org/software/make/manual/make.html#Automatic-Variables">automatic variables</a>
+      -- variables that <tt>make</tt> computes afresh for
+      each rule that is executed, based on the target and prerequisites of
+      the rule.  Note that automatic variables can only be used
+      in the recipe portion of a rule.
+      </p>
+
+      <p>
+      We use two common automatic variables in our rule above:
+      </p>
+
+      <dl>
+        <dt class="ms-2"><tt>$@</tt></dt>
+        <dd class="ms-4">The rule's target</dd>
+
+        <dt class="ms-2"><tt>@^</tt></dt>
+        <dd class="ms-4">The names of all the rule's prerequisites</dd>
+      </dl>
+
+      <h1 class="display-4">Adding a <tt>clean</tt> rule</h1>
+
+      <p>
+      It is good practice to include a special rule, conventionally called
+      <tt>clean</tt>, to delete any build artifacts (in our running example,
+      the only artifact is the executable that we build, <tt>foo</tt>).
+      </p>
+
+      <pre data-src="ex4/Makefile" data-download-link class="line-numbers language-makefile"></pre>
+
+      <p>
+      As with any rule, we can explicitly invoke the <tt>clean</tt> rule by
+      specifying the target's name as an argument to 'make': <kbd>make clean</kbd>.  
+      (By default, <kbd>make</kbd> without any arguments will try to build the first target
+      in the <tt>Makefile</tt> (here, <tt>foo</tt>)).
+      </p>
+
+      <p>
+      Since there is no file named <tt>clean</tt>, <kbd>make clean</kbd>
+      will always invoke the rule's recipe, hoping to create this very file,
+      which of course, it never does.  That's the trick.
+      </p>
+      
+      <p>
+      However, there's a fly in the ointment: if by some strange
+      chance we do have a file called <tt>clean</tt> in our directory, then
+      <kbd>make clean</kbd> will never run; the rule has no
+      prerequisites, and thus the <tt>clean</tt> <i>file</i> is always up-to-date.
+      </p>
+
+      <p>
+      To make our intention clear to <tt>make</tt> that <tt>clean</tt> is a fake rule, and not
+      a file -- even if such a file called <tt>clean</tt> exists -- we add
+      <tt>clean</tt> as a prerequisite of the special target, <tt>.PHONY</tt>.
+      By doing so, <kbd>make clean</kbd> will run the recipe regardless of
+      whether we have a file named <tt>clean</tt>.
+      </p>
+
+
+      <h1 class="display-4">Multiple source files</h1>
+
+      <p>
+      Let's say that we now have the following files:
+      </p>
+
+      <div class="text-end"><tt>a.c</tt></div>
+      <pre data-src="ex5/a.c" data-download-link class="line-numbers"></pre>
+
+      <div class="text-end"><tt>b.c</tt></div>
+      <pre data-src="ex5/b.c" data-download-link class="line-numbers"></pre>
+
+      <div class="text-end"><tt>foo.c</tt></div>
+      <pre data-src="ex5/foo.c" data-download-link class="line-numbers"></pre>
+
+      <div class="text-end"><tt>foo.h</tt></div>
+      <pre data-src="ex5/foo.h" data-download-link class="line-numbers"></pre>
+
+      <div class="text-end"><tt>bar.c</tt></div>
+      <pre data-src="ex5/bar.c" data-download-link class="line-numbers"></pre>
+
+      <div class="text-end"><tt>bar.h</tt></div>
+      <pre data-src="ex5/bar.h" data-download-link class="line-numbers"></pre>
+
+      <p>
+      In other words, <tt>a</tt> and <tt>b</tt> are two programs, each of which
+      uses <tt>foo</tt> and <tt>bar</tt>.
+      </p>
+
+      <h1 class="display-6">Approach 1 (Simple but wasteful)</h1>
+
+      <p>
+      A simple Makefile for this project is:
+      </p>
+
+      <pre data-src="ex5/Makefile" data-download-link class="line-numbers language-makefile"></pre>
+
+      <p>
+      Note that we create a PHONY target called <tt>all</tt> to represent both
+      programs.  While this Makefile is simple and easy to read, it has the
+      drawback that <tt>foo.c</tt> and <tt>bar.c</tt> are compiled twice: once
+      for <tt>a</tt> and once for <tt>b</tt>.  For a small project, this is no
+      big deal; for a large project, it can waste a lot of time.
+      </p>
+
+      <h1 class="display-6">Approach 2 (Efficient but verbose)</h1>
+
+      <p>
+      Rather than recompile <tt>foo.c</tt> and <tt>bar.c</tt> twice, we can
+      create rules for compiling these to their respective <tt>.o</tt> files:
+      </p>
+
+      <pre data-src="ex6/Makefile" data-download-link class="line-number language-makefiles"></pre>
+
+      <p>
+      Note the use of the automatic variable
+      <code class="language-makefile">$&lt;</code>,
+      which represents a rule's <i>first</i> prerequisite.
+      </p>
+
+      <p>
+      This approach is more efficient, but there is a lot of redundancy in the
+      rules.  For a small number of source files, the redundancy is manageable;
+      for larger projects, it becomes an obstacle to making changes.
+      </p>
+
+      <h1 class="display-6">Approach 3 (Efficient and succinct)</h1>
+
+      <p>
+      To remove some of the redundancy, we can use <a
+        href="https://www.gnu.org/software/make/manual/html_node/Static-Pattern.html#Static-Pattern">static
+        pattern rules</a>.  Per the manual, "Static pattern rules are rules
+      which specify multiple targets and construct the prerequisite names for
+      each target based on the target name."  The general form is
+      </p>
+
+      <pre><code class="language-makefile">
+      targets ...: target-pattern: prereq-patterns ...:
+      	recipe
+        ...
+      </code></pre>
+
+      <p>
+      Each target is matched against the target-pattern.  The target-pattern
+      uses the '%' character to capture a portion of the target name; this
+      captured string is called the stem.  The '%' character can then be used
+      in the prereq-patterns to substitute the stem.
+      </p>
+
+      <p>
+      The following Makefile demonstrates the use of static pattern rules for
+      our project.  This new Makefile at first appears cryptic, but becomes
+      easier to understand with practice.  Also note the use of the variable
+      <code class="language-makefile">$(CC)</code> which is a
+      <a href="https://www.gnu.org/software/make/manual/html_node/Implicit-Variables.html#Implicit-Variables">predefined variable</a>
+      that expands to the system's default C compiler.
+      </p>
+
+      <pre data-src="ex7/Makefile" data-download-link class="line-numbers language-makefile"></pre>
+
+
+      <h1 class="display-4">More information</h1>
+
+      <p> For our course, the above example Makefiles will usually
+      suffice.  However, if you are interested in learning more, the
+      official <a href="https://www.gnu.org/software/make/manual">GNU Make
+      Manual</a> is an outstanding reference and a fairly quick read.
+      </p>
+
+      <p>
+      The following books are also helpful:
+      </p>
+
+      <div class="ps-3 mb-2">
+        <a href="https://learning.oreilly.com/library/view/managing-projects-with/0596006101/">Managing project with GNU make, 3rd Edition</a><br/>
+        Meklenburg, et. al<br/>
+        O'Reilly, 2004, ISBN: 0-596-00610-1<br/>
+        (<a href="https://wm.primo.exlibrisgroup.com/discovery/fulldisplay?docid=alma991033095211903196&context=L&vid=01COWM_INST:01COWM_WM_NEWUI&lang=en&search_scope=WMCWF&adaptor=Local%20Search%20Engine&tab=Everything&query=any,contains,GNU%20Make">free online access</a> via William &amp; Mary library)<br/>
+      </div>
+
+      <p>
+      and
+      </p>
+
+      <div class="ps-3 mb-2">
+        <a href="https://nostarch.com/gnumake">The GNU make book</a><br/>
+        John Graham-Cumming<br/>
+        No Starch Press, 2015 ISBN-13: 978-1-59327-649-2<br/>
+        (<a href="https://wm.primo.exlibrisgroup.com/discovery/fulldisplay?docid=alma991033096946703196&context=L&vid=01COWM_INST:01COWM_WM_NEWUI&lang=en&search_scope=WMCWF&adaptor=Local%20Search%20Engine&tab=Everything&query=any,contains,GNU%20Make">free online access</a> via William &amp; Mary library)
+      </div>
+
+    </div>
+    
+    <!-- bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> 
+    <!-- prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-makefile.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/download-button/prism-download-button.min.js"></script> 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autolinker/prism-autolinker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/command-line/prism-command-line.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/file-highlight/prism-file-highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/keep-markup/prism-keep-markup.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
+
+  </body>
+</html>

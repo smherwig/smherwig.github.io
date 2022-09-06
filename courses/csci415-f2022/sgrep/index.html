@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>sgrep</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- highlight.js
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/foundation.min.css" rel="stylesheet">
+    -->
+    <!-- prism.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-solarizedlight.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autolinker/prism-autolinker.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/command-line/prism-command-line.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
+  </head>
+  <body>
+    <div class="container pt-5">
+
+      <h1 class="display-3 text-center">
+        <a href="../index.html">CSCI 415/515: Fall 2022</a><br/>
+        <small>Systems Programming</small><br/>
+        <small>Project 1: sgrep</small><br/>
+      </h1>
+
+      <p class="text-center">
+      <strong>Due: Mon, Sept 12, 7:00am</strong>
+      </p>
+      <hr/>
+
+      In this project, you will implement a  <strong>s</strong>imple version of
+      <strong><a href="https://man7.org/linux/man-pages/man1/egrep.1.html">grep</a></strong>, 
+      which we will call <strong>sgrep</strong>.
+
+      <h1 class="display-4">Name</h1>
+      <div class="ms-2">
+        sgrep - print lines of a file that match a string
+      </div>
+
+      <h1 id="synopsis" class="display-4">Synopsis</h1>
+      <div class="ms-2">
+        sgrep [-c] [-h] [-n] [-q] [-B NUM] STR FILE
+      </div>
+
+      <h1 class="display-4">Options</h1>
+      <div class="ms-2"><tt>-c, --count</tt></div>
+      <div class="ms-4">
+        <p>
+        Suppress normal output; instead print a count of matching lines
+        for the input file.  With the -v option, count non-matching
+        lines.
+        </p>
+      </div>
+
+      <div class="ms-2"> <tt>-h, --help</tt> </div>
+      <div class="ms-4">
+        <p>
+        Print a usage statement to stdout and exit with status 0.
+        </p>
+      </div>
+
+      <div class="ms-2"><tt>-n, --line-number</tt></div>
+      <div class="ms-4">
+        <p>
+        Prefix each line of output with the 1-based line number of the file,
+        followed immediately by a colon (e.g., <tt>1:foo</tt>).
+        </p>
+      </div>
+
+      <div class="ms-2"><tt>-q, --quiet</tt></div>
+      <div class="ms-4">
+        <p>
+        Quiet; do not write anything to stdout.  Exit immediately with zero
+        status if any match was found.  If a match is not found, exit with a
+        non-zero status.
+        </p>
+      </div>
+
+        
+      <div class="ms-2"><tt>-B NUM, --before-context NUM</tt></div>
+      <div class="ms-4">
+        <p>
+        Print <tt>NUM</tt> lines of leading context before matching lines.
+        </p>
+      </div>
+
+      <h1 class="display-4">Exit Status</h1>
+      <div class="ms-2">
+        The exit status is 0 if at least one line was matched, and
+        non-zero (conventionally 1 or 2) if a line was not found or an error
+        occurred.
+      </div>
+
+      <h1 class="display-4">Bonus 1</h1>
+      <div class="ms-2">
+        <p>
+        Implement the following feature:
+        </p>
+      </div>
+      <div class="ms-2"><tt>-i, --ignore-case</tt></div>
+      <div class="ms-4">
+        <p>
+        Perform a case-insenstive match for <tt>STR</tt>. 
+        </p>
+      </div>
+      <div class="ms-2">
+        <p>
+        Remember to include a blank file called <tt>bonus1</tt> in your project
+        submission so that I know to grade this feature.
+        </p>
+      </div>
+
+      <h1 class="display-4">Bonus 2</h1>
+      <div class="ms-2">
+        <p>
+        Implement the following feature:
+        </p>
+      </div>
+      <div class="ms-2"><tt>-v, --invert-match</tt></div>
+      <div class="ms-4">
+        <p>
+        Invert the sense of matching, to print non-matching lines.
+        </p>
+      </div>
+      <div class="ms-2">
+        <p>
+        Remember to include a blank file called <tt>bonus2</tt> in your project
+        submission so that I know to grade this feature.
+        </p>
+      </div>
+
+      <h1 class="display-4">Submitting</h1>
+      <div class="ms-2">
+        <p>
+        Submit your project as a zip file via
+        <a href="https://www.gradescope.com/courses/416439">gradescope</a>.
+         Your project must include a <tt>Makefile</tt> that builds an
+         executable called <tt>sgrep</tt>.  Please refer to the instructions
+           for <a href="../submitting.html">submitting an assignment</a> for
+           details on how to login to gradescope and properly zip your project.
+        </p>
+      </div>
+
+      <h1 class="display-4">Rubric</h1>
+
+      <p>
+      <strong>Input Files</strong>:
+      <a href="data/input/alice.txt"><span class="badge bg-primary">alice.txt</span></a>
+      <a href="data/input/dorothy.txt"><span class="badge bg-primary">dorothy.txt</span></a>
+      </p>
+
+      <h1 class="display-5"><strong>Invalid Input</strong></h1>
+      <hr/>
+
+      <h1 class="display-6"><strong>1.1</strong> Wrong number of arguments <small>(7 pts)</small></h1>
+      <div class="ms-2">
+        <pre class="command-line" data-host="host"><code class="language-bash">
+        ./sgrep apple
+        </code></pre>
+        <p>
+        Prints a a one line messge to stderr.
+        </p>
+      </div>
+
+        <h1 class="display-6"><strong>1.2</strong> No such file <small>(7 pts)</small></h1>
+        <div class="ms-2">
+          <pre class="command-line" data-host="host"><code class="language-bash">
+          ./sgrep apple nonexistent.txt
+          </code></pre>
+          <p>
+          Prints a message to stderr that includes the text <tt class="mark">No such file</tt>
+          (case-insenstive).
+          </p>
+        </div>
+
+        <h1 class="display-6"><strong>1.3</strong> No such file exit status <small>(7 pts)</small></h1>
+        <div class="ms-2">
+          <pre class="command-line" data-host="host"><code class="language-bash">
+          ./sgrep apple nonexistent.txt
+          </code></pre>
+          <p>
+          Exits with a nonzero status.
+          </p>
+        </div>
+
+        <h1 class="display-5"><strong><tt>-h, --help</tt> option</strong></h1>
+        <hr/>
+
+        <h1 class="display-6"><strong>2.1</strong> Usage statement <small>(7 pts)</small></h1>
+        <div class="ms-2">
+          <pre class="command-line" data-host="host"><code class="language-bash">
+          ./sgrep -h
+          </code></pre>
+          <p>
+          Prints a usage statement to stdout.  You can decide the content of
+          the usage statement. Conventionally, this option either prints the
+          <a href="#synopsis">synopsis</a> or a more verbose statement
+          that also includes a description of the options.
+          </p>
+        </div>
+
+        <h1 class="display-6"><strong>2.2</strong> Exit status <small>(7 pts)</small></h1>
+        <div class="ms-2">
+          <pre class="command-line" data-host="host"><code class="language-bash">
+          ./sgrep -h
+          </code></pre>
+          <p>
+          Exits with a status of 0.
+          </p>
+        </div>
+
+        <h1 class="display-5"><strong><tt>-c, --count</tt> option</strong></h1>
+        <hr/>
+
+        <h1 class="display-6"><strong>3.1</strong> No matches <small>(3 pts)</small></h1>
+        <div class="ms-2">
+          <pre class="command-line" data-host="host" data-filter-output="(out) " data-right-trim="false"><code class="language-bash">
+          ./sgrep -c pie alice.txt
+          (out) 0
+          </code></pre>
+          <p>
+          Has the above output (stdout).
+          </p>
+        </div>
+
+        <h1 class="display-6"><strong>3.2</strong> No matches exit status <small>(3 pts)</small></h1>
+        <div class="ms-2">
+          <pre class="command-line" data-host="host" data-right-trim="true"><code class="language-bash">
+          ./sgrep -c pie alice.txt
+          </code></pre>
+          <p>
+          Exits with nonzero status.
+          </p>
+        </div>
+
+        <h1 class="display-6"><strong>3.3</strong> Match <small>(3 pts)</small></h1>
+        <div class="ms-2">
+          <pre class="command-line" data-host="host" data-filter-output="(out) " data-right-trim="false"><code class="language-bash">
+          ./sgrep -c cake alice.txt
+          (out) 3
+          </code></pre>
+          <p>
+          Has the above output (stdout).
+          </p>
+        </div>
+
+        <h1 class="display-6"><strong>3.4</strong> Match exit status <small>(3 pts)</small></h1>
+        <div class="ms-2">
+          <pre class="command-line" data-host="host" data-filter-output="(out) " data-right-trim="true"><code class="language-bash">
+          ./sgrep -c cake alice.txt
+          </code></pre>
+          <p>
+          Exits with status of 0.
+          </p>
+        </div>
+
+        <h1 class="display-5"><strong><tt>-c, --count</tt> option</strong></h1>
+        <hr/>
+
+        <h1 class="display-6"><strong>4.1</strong> No matches, no output <small>(3 pts)</small></h1>
+        <div class="ms-2">
+          <pre class="command-line" data-host="host" data-filter-output="(out) " data-right-trim="false"><code class="language-bash">
+            ./sgrep -q rainbox alice.txt
+        </code></pre>
+          <p>
+          Prints nothing.
+          </p>
+        </div>
+
+        <h1 class="display-6"><strong>4.2</strong> No matches exit status <small>(3 pts)</small></h1>
+        <div class="ms-2">
+          <pre class="command-line" data-host="host" data-filter-output="(out) " data-right-trim="true"><code class="language-bash">
+          ./sgrep -q rainbox alice.txt
+          </code></pre>
+          <p>
+          Exits with nonzero status.
+          </p>
+        </div>
+
+        <h1 class="display-6"><strong>4.3</strong> Match, no output <small>(3 pts)</small></h1>
+        <div class="ms-2">
+          <pre class="command-line" data-host="host" data-filter-output="(out) " data-right-trim="false"><code class="language-bash">
+          ./sgrep -q golden alice.txt
+          </code></pre>
+          <p>
+          Prints nothing.
+          </p>
+        </div>
+
+        <h1 class="display-6"><strong>4.4</strong> Match exit status <small>(3 pts)</small></h1>
+        <div class="ms-2">
+          <pre class="command-line" data-host="host" data-filter-output="(out) " data-right-trim="true"><code class="language-bash">
+          ./sgrep -q golden alice.txt
+          </code></pre>
+          <p>
+          Exits with status of 0.
+          </p>
+        </div>
+
+        <h1 class="display-5"><strong><tt>-n, --line-number</tt> option</strong></h1>
+        <hr/>
+
+        <h1 class="display-6"><strong>5.1</strong> Match <small>(13 pts)</small></h1>
+        <div class="ms-2">
+          <a href="data/output/sgrep_-n_key_alice.txt"><span class="badge bg-success">output</span></a>
+          <pre class="command-line" data-host="host" data-filter-output="(out) " data-right-trim="false"><code class="language-bash">
+          ./sgrep -n key alice.txt
+          (out) 107:glass; there was nothing on it except a tiny golden key, and Alice's
+          (out) 109:but, alas! either the locks were too large, or the key was too small,
+          (out) 113:little golden key in the lock, and to her great delight it fitted!
+          (out) 128:back to the table, half hoping she might find another key on it, or at
+          (out) 149:flavour of cherry-tart, custard, pine-apple, roast turkey, toffee, and
+          (out) 167:door, she found she had forgotten the little golden key, and when she
+          (out) 188:Alice, "and if it makes me grow larger, I can reach the key; and if it
+          </code></pre>
+          <p>
+          Has the above output (stdout).
+          </p>
+        </div>
+
+        <h1 class="display-5"><strong><tt>-B, --before-context</tt> option</strong></h1>
+        <hr/>
+
+        <h1 class="display-6"><strong>6.1</strong> <tt>-B1</tt> <small>(7 pts)</small></h1>
+        <div class="ms-2">
+          <a href="data/output/sgrep_-B1_garden_alice.txt"><span class="badge bg-success">output</span></a>
+          <pre class="command-line" data-host="host" data-filter-output="(out) " data-right-trim="false"><code class="language-bash">
+          ./sgrep -B1 garden alice.txt
+          (out) much larger than a rat-hole: she knelt down and looked along the
+          (out) passage into the loveliest garden you ever saw. How she longed to get
+          (out) brightened up at the thought that she was now the right size for going
+          (out) through the little door into that lovely garden. First, however, she
+          (out) After a while, finding that nothing more happened, she decided on going
+          (out) into the garden at once; but, alas for poor Alice! when she got to the
+          (out) makes me grow smaller, I can creep under the door; so either way I'll
+          (out) get into the garden, and I don't care which happens!"
+          </code></pre>
+          <p>
+          Has the above output (stdout).
+          </p>
+        </div>
+
+        <h1 class="display-6"><strong>6.2</strong> <tt>-B3</tt> <small>(7 pts)</small></h1>
+        <div class="ms-2">
+          <a href="data/output/sgrep_-B3_cupboards_alice.txt"><span class="badge bg-success">output</span></a>
+          <pre class="command-line" data-host="host" data-filter-output="(out) " data-right-trim="false"><code class="language-bash">
+          ./sgrep -B3 cupboards alice.txt
+          (out) was going to happen next. First, she tried to look down and make out
+          (out) what she was coming to, but it was too dark to see anything; then she
+          (out) looked at the sides of the well, and noticed that they were filled with
+          (out) cupboards and book-shelves; here and there she saw maps and pictures
+          (out) passed; it was labelled "ORANGE MARMALADE", but to her great
+          (out) disappointment it was empty: she did not like to drop the jar for fear
+          (out) of killing somebody underneath, so managed to put it into one of the
+          (out) cupboards as she fell past it.
+          </code></pre>
+          <p>
+          Has the above output (stdout).
+          </p>
+        </div>
+
+        <h1 class="display-5"><strong>Multiple options</strong></h1>
+        <hr/>
+
+        <h1 class="display-6"><strong>7.1</strong> <tt>-n -B2</tt> <small>(7 pts)</small></h1>
+        <div class="ms-2">
+          <pre class="command-line" data-host="host" data-filter-output="(out) " data-right-trim="false"><code class="language-bash">
+          ./sgrep -n -B2 mouse alice.txt
+          (out) 78:tea-time. Dinah my dear! I wish you were down here with me! There are
+          (out) 79:no mice in the air, I'm afraid, but you might catch a bat, and that's
+          (out) 80:very like a mouse, you know. But do cats eat bats, I wonder?" And here
+          </code></pre>
+          <p>
+          Has the above output (stdout).
+          </p>
+        </div>
+
+        <h1 class="display-6"><strong>7.2</strong> <tt>-c -B2</tt> <small>(7 pts)</small></h1>
+        <div class="ms-2">
+          <pre class="command-line" data-host="host" data-filter-output="(out) " data-right-trim="false"><code class="language-bash">
+           ./sgrep -c -B2 mouse alice.txt
+           (out) 1
+          </code></pre>
+          <p>
+          Has the above output (stdout).
+          </p>
+        </div>
+
+        <h1 class="display-5"><strong>Bonus 1: <tt>-i, --ignore-case</tt> option</strong></h1>
+        <hr/>
+
+        <h1 class="display-6"><strong>100.1</strong> Ignore case <small>(10 pts)</small></h1>
+        <div class="ms-2">
+          <a href="data/output/sgrep_-i_rabbit_alice.txt"><span class="badge bg-success">output</span></a>
+          <pre class="command-line" data-host="host" data-filter-output="(out) " data-right-trim="false"><code class="language-bash">
+          ./sgrep -i rabbit alice.txt
+          (out) Down the Rabbit-Hole
+          (out) picking the daisies, when suddenly a White Rabbit with pink eyes ran
+          (out) so _very_ much out of the way to hear the Rabbit say to itself, "Oh
+          (out) time it all seemed quite natural); but when the Rabbit actually _took a
+          (out) had never before seen a rabbit with either a waistcoat-pocket, or a
+          (out) large rabbit-hole under the hedge.
+          (out) The rabbit-hole went straight on like a tunnel for some way, and then
+          (out) long passage, and the White Rabbit was still in sight, hurrying down
+          (out) turned the corner, but the Rabbit was no longer to be seen: she found
+          </code></pre>
+          <p>
+          Has the above output (stdout).
+          </p>
+        </div>
+
+        <h1 class="display-5"><strong>Bonus 2: <tt>-v, --invert-match</tt> option</strong></h1>
+        <hr/>
+
+        <h1 class="display-6"><strong>200.1</strong> Invert match <small>(10 pts)</small></h1>
+        <div class="ms-2">
+          <a href="data/output/sgrep_-v_the_dorothy.txt"><span class="badge bg-success">output</span></a>
+          <pre class="command-line" data-host="host" data-filter-output="(out) " data-right-trim="false"><code class="language-bash">
+          ./sgrep -v the dorothy.txt
+          (out) by wagon many miles. There were four walls, a floor and a roof,
+          (out) which made one room; and this room contained a rusty looking cooking
+          (out) whirlwinds arose, mighty enough to crush any building in its path. It
+          </code></pre>
+          <p>
+          Has the above output (stdout).
+          </p>
+        </div>
+
+    </div>
+
+    <!-- bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> 
+    <!-- highlight.js
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    -->
+    <!-- prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autolinker/prism-autolinker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/command-line/prism-command-line.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/keep-markup/prism-keep-markup.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
+  </script>
+  </body>
+</html>

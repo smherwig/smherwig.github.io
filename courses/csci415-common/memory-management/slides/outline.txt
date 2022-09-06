@@ -1,0 +1,69 @@
+Slide 1
+-------
+A typical a program on disk looks like:
+
+Programs are in a special form called an ELF executable or ELF object, and so
+there's some header information for that file type.
+
+Next is the actual program code.  
+
+Finally, there is the program data, which gets split into two types: 
+    - initialized data
+    - uninitialzied data.
+
+
+Slide 2
+-------
+When the kernel loads the executable image into memory and creates a process,
+the process gets mapped into memory as follows:
+
+Each process begins execution with three memory segments: 
+    1. text
+    2. data
+    3. stack.
+
+The text is read-only and is normally shared by all processes executing the
+file.
+
+The data and stack are writable and private to each process.
+
+To begin execution, the kernel arranges to have the text portion of the file
+mapped into the low part of the process address space starting at the beginning
+of the second page of the virtual adress space.
+%
+The first page of the vitual address space is makred as invalid so that
+attempts to read or write trhoguh a null pointer will fault.
+
+The initalized ata portion of the file is mapped into the address space
+following the text.
+%
+An area equal to the uninitialized data region is created wth zero-filled memory
+after the initialzied data region.
+%
+The stack is also created crated from zero-filled memory.
+
+
+
+
+Slide 1
+-------
+OS provides process with a virtual memory abstraction.
+
+To the process, memory is contiguous and byte-addressable: memory starts at 0,
+and continous to a very large numer (on a 64-bit system, this is usually 2^47,
+or 128 TB).
+
+
+Slide 2
+-------
+Of course, virtual memory is just a convenient abstraction.  Behind the scenes,
+the kernel (with the help of the CPU's memory management unit), maps these
+virtual addresses to physical addresses.  The upshot is that when the CPU
+fetches an address, teh MMU looks at the mappings provided by the kernel and
+converts the virtual address to a physical address.
+
+The mechancs of virtual memory is a very rich topic, but it's best left for an
+OS course.
+%
+In this course, we're mostly concerned with how a process interacts with this
+abstraction.

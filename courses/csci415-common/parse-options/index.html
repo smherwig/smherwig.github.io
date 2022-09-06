@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Parsing Command-Line Options</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- highlight.js
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/foundation.min.css" rel="stylesheet">
+    -->
+    <!-- prism.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-solarizedlight.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autolinker/prism-autolinker.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/command-line/prism-command-line.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css">
+  </head>
+  <body>
+    <div class="container pt-5">
+
+      <h1 class="display-3 text-center">Parsing Command-Line Options</h1>
+      <hr/>
+
+      <p>
+      As our programs grow in complexity, we will need to support more
+      complicated command-line usages beyond mandatory positional arguments, to 
+      also include optional arguments.  For instance, while the basic usage of
+      <a href="https://man7.org/linux/man-pages/man1/grep.1.html">grep</a>
+      is:
+      </p>
+
+      <pre class="command-line" data-host="host"><code class="language-bash">
+      grep PATTERN FILE
+      </code></pre>
+
+      <tt>grep</tt> also includes optional flag arguments, like:
+
+      <pre class="command-line" data-host="host"><code class="language-bash">
+      grep -i PATTERN FILE    # case-insensitive search
+      </code></pre>
+
+      <p>
+      as well as options that take an argument:
+      </p>
+
+      <pre class="command-line" data-host="host"><code class="language-bash">
+      grep -m 5 PATTERN FILE  # stop searching after 5 matches
+      </code></pre>
+
+      <p>
+      These options can be used to gather, and can even be "grouped" using a single
+      hyphen:
+      <p>
+
+      <pre class="command-line" data-host="host"><code class="language-bash">
+      grep -i -m 5 PATTERN FILE # case-insenstive stop searching after 5 matches
+      grep -im 5 PATTERN FILE   # equivalent syntax
+      </code></pre>
+
+      <p>
+      Moreover, each of these options has an equivalent long name:
+      </p>
+
+      <pre class="command-line" data-host="host"><code class="language-bash">
+      grep --ignore-case PATTERN FILE   # same as -i
+      grep --max-count 5 PATTERN FILE   # same as -m
+      grep --max-count=5 PATTERN FILE   # alternative syntax that uses '='
+      </code></pre>
+
+      <p>
+      Writing your own code to parse command-line options like these is tedious
+      and error-prone.  Fortunately, libc provides us with the
+      <a href="https://man7.org/linux/man-pages/man3/getopt.3.html">getopt</a>
+      and
+      <a href="https://man7.org/linux/man-pages/man3/getopt.3.html">getopt_long</a>
+      library functions. 
+      </p>
+      
+      <p>
+      The major difference between these two functions is that <tt>getopt</tt>
+      only handles short options (e.g.,  <tt>-i</tt>, and <tt>-m</tt>) and is a
+      POSIX standard, , whereas <tt>getopt_long</tt> handles both short and
+      long (e.g., <tt>--ignore-case</tt>, <tt>--max-count</tt>) options, but is
+      a GNU-extension (though widely supported).  Since long options are a nice
+      feature that require little additional work on our part, we will focus on
+      how to use <tt>getopt_long</tt>.
+      </p>
+
+      <h1 class="display-4"><tt>getopt_long</tt></h1>
+
+      <p>
+      In this example, we will implement the command-line parsing for a subset of
+      <tt>grep</tt>'s options, namely:
+      </p>
+
+      <div class="ms-2"><tt>-h, --help</tt></div>
+      <div class="ms-4">
+        <p>
+        Show usage statement and exit.
+        </p>
+      </div>
+
+      <div class="ms-2"><tt>-i, --ignore-case</tt></div>
+      <div class="ms-4">
+        <p>
+        Perform a case-insensitive match for PATTERN.
+        </p>
+      </div>
+
+      <div class="ms-2"><tt>-m, --max-count-case</tt></div>
+      <div class="ms-4">
+        <p>
+        Stop reading FILE after NUM matching lines.
+        </p>
+      </div>
+
+      <p>
+      We will call our program <tt>grep_stub</tt> to denote that the program
+      only performs the command-line parsing, and does not actually search a
+      file.  We will build up the program in steps, and then show the complete
+      source code at the end.
+      </p>
+
+
+      <h1 class="display-6">Basic template</h1>
+
+      <p>
+      The basic template for using <tt>getopt_long</tt> is:
+      </p>
+
+      <pre><code class="language-c line-numbers">
+      const char *short_opts = ":him:";
+      struct option long_opts[] = { 
+          {"help", no_argument, NULL, 'h'},
+          {"ignore-case", no_argument, NULL, 'i'},
+          {"max-count", required_argument, NULL, 'm'},
+          {NULL, 0, NULL, 0}
+      };  
+
+      while (1) {
+          opt = getopt_long(argc, argv, short_opts, long_opts, NULL);
+          if (opt == -1)
+              break;
+
+          switch (opt) {
+          case 'h': /* ... */
+              break;
+          case 'i': /* ... */
+              break;
+          case 'm': /* ... */
+              break;
+          case '?': /* ... unknown option */
+          case ':': /* ... option missing required argument */
+          default:
+              /* ... unexpected; here for completeness */
+          }
+      }
+      </code></pre>
+
+      <p>
+      On each successive call, <tt>getopt_long</tt> parses the next option it
+      finds in <tt>argv</tt> and returns a value corresponding to that option.  We then use a switch
+      statement to determine the specific option to process.  After
+      <tt>getopt_long</tt> has parsed all options, it returns <tt>-1</tt>.
+      </p>
+
+      <p>When encountering a short option, the value that <tt>getopt_long</tt>
+      returns is the value of the character.  When encountering a long option,
+      we have a few choices on what we would like <tt>getopt_long</tt> to
+      return based on how we specify the <tt>struct option long_opts</tt> array
+      on line 2.  Here, we use the conventional approach of having
+      <tt>getopt_long</tt> return the same value as for the short option; we
+      achieve these by specifying that the third element of a <tt>struct
+      option</tt> is <tt>NULL</tt>, and the fourth element is the
+      corresponding short option character.
+      </p>
+
+
+      <p>
+      The <tt>short_opts</tt> variable on line 1 is a string of the short options.
+      An option that takes a required argument is followed by a <mark>:</mark>.
+      The leading <mark>:</mark> suppresses <tt>getopt_long's</tt> normal
+      (terrible) error handling.  By default <tt>getopt_long</tt> prints an error message if it cannot parse the
+      options; we'd prefer to print our own messages.  Also by default,
+      getopt_long returns <tt>'?'</tt> on error: either an unknown option or an option
+      that is missing a required argument.  The leading <mark>:</mark> says to disambiguate
+      these two cases by having getopt_long return <tt>'?'</tt> for an unknown option
+      and <tt>':'</tt> for an option that is missing a required argument.
+      </p>
+
+
+      <h1 class="display-6">Complete <tt>main</tt> function</h1>
+
+      <p>
+      The following is the complete main function.  For now, disregard,
+      <tt>mu_str_to_int</tt> and the <tt>die_*</tt> functions; the former
+      simply converts a string to an <tt>int</tt>, and the latter print an
+      error and terminate the program.
+      </p>
+
+      <p>
+      The important points are:
+      <p>
+
+      <ul>
+        <li>For options that take a required argument, <tt>getopt_long</tt>
+          sets the global variable <tt>optarg</tt> to the argument's
+          value.</li>
+        <li>In the case of an unknown option (<tt>'?'</tt>),
+          <tt>getopt_long</tt> sets the global variable <tt>optopt</tt> to the
+          unknown option's character for short options, and an unspecified value
+          (typically 0) for long options.
+          </li>
+        <li><tt>getopt_long</tt> always sets <tt>optind</tt> to the index of
+          the next element in <tt>argv</tt> to process.  Thus, after processing all options,
+          <tt>argv[optind]</tt> is the first positional argument,
+          <tt>argv[optind + 1]</tt> the second, etc.  Of course, to avoid
+          out-of-bound accesses on <tt>argv</tt>, you should first check the value of <tt>argc -
+          optind</tt>, which is precisely the number of positional arguments.
+      </ul>
+
+      <pre data-src="grep_stub/grep_stub.c" data-range="99," class="line-numbers"></pre>
+
+
+      <h1 class="display-6">Complete program</h1>
+
+      <p>
+      The complete <tt>grep_stub</tt> program appears below.  A few important
+      things to note. First, as per the <strong>Feature Test Macros</strong> section of the
+      <a href="https://man7.org/linux/man-pages/man3/getopt.3.html">getopt_long</a>
+      man page, to ensure that the libc header files expose the
+      <tt>getopt_long</tt> function, we must include the following
+      <code class="language-c">#define _GNU_SOURCE</code> before including header files:
+      </p>
+
+      <pre data-src="grep_stub/grep_stub.c" data-range="1,10" class="line-numbers"></pre>
+
+      <p>
+      You can read about such defines on the
+      <a href="https://man7.org/linux/man-pages/man7/feature_test_macros.7.html">feature_test_macros</a>
+      man page; <tt>_GNU_SOURCE</tt> is a very common one.
+      </p>
+
+      <p>
+      Second, the usage statement uses the trick that the compiler concatenates C strings that are
+      separated only by spaces.
+      </p>
+
+      <pre data-src="grep_stub/grep_stub.c" data-range="12,25" class="line-numbers"></pre>
+
+      <p>
+      Finally, the order of optional arguments and positional arguments is
+      immaterial: <tt>getopt_long</tt> will permute <tt>argv</tt> such that,
+      after it is finished processing the options, all positional arguments are
+      at the end of <tt>argv</tt>.  Note that some programs require that options come
+      first and positional arguments last, as this is the POSIX-ly correct
+      bevhavior: <tt>getopt_long</tt> includes ways to enable such
+      behavior, if desired.
+      </p>
+
+      <p>
+      The complete program is:
+      </p>
+
+      <pre data-src="grep_stub/grep_stub.c" data-download-link class="line-numbers"></pre>
+    </div>
+
+    <!-- bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> 
+    <!-- prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/download-button/prism-download-button.min.js"></script> 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autolinker/prism-autolinker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/command-line/prism-command-line.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/file-highlight/prism-file-highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/keep-markup/prism-keep-markup.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
+
+  </body>
+</html>
