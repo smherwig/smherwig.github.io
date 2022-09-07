@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Linked Lists</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- prism.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-solarizedlight.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autolinker/prism-autolinker.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/command-line/prism-command-line.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css">
+  </head>
+  <body>
+    <div class="container pt-5">
+
+      <h1 class="display-3 text-center">Linked Lists</h1>
+      <hr/>
+
+      <p>
+      The Linux kernel's implementation
+      of linked list is contained in a header file called <a
+      href="src/list.h"><tt>list.h</tt></a>.  (The version linked is modified
+      slightly to remove dependencies on other kernel headers so that the file
+      can be used in userspace.)
+      You can download the file to your projects'
+      source directory, and include it in your C files as:
+      </p>
+
+      <pre><code class="language-c">
+      #include "list.h"
+      </code></pre>
+
+      <h1 class="display-5 text-center">Design</h1>
+
+      <p>
+      The general idea with <tt>list.h</tt> is that we create lists
+      where all elements are the same type of <tt>struct</tt>, and we
+      <i>embed</i> the list within the struct.
+      </p>
+
+      <p>
+      Let's say we have a <code class="language-c">struct person</code>:
+      </p>
+
+      <pre><code class="language-c">
+      struct person {
+          char *name;
+          int age;
+      };
+      </code></pre>
+
+      <p>
+      To chain this struct in a list, we embed <tt>list.h</tt>'s
+      <code class="language-c">struct list_head</code>:
+      </p>
+
+      <pre><code class="language-c">
+      struct person {
+          struct list_head list;
+          char *name;
+          int age;
+      };
+      </code></pre>
+
+      <p>
+      If we examine <tt>list.h</tt>, we will see that <code
+        class="language-c">struct list_head</code> is defined as
+      </p>
+
+      <pre><code class="language-c">
+      struct list_head {
+        struct list_head *prev, *next;
+      };
+      </code></pre>
+
+      <p>
+      In other words, it represents a node in a doubly-linked list.  The head
+      of the list is simply a bare
+      <code class="language-c">struct list_head</code>:
+      one that is not embedded in a 
+      <code class="language-c">struct person</code>.
+      </p>
+
+      <p>
+      The linked list implementation relies on a few clever macros to go from
+      the pointer to the embedded <code class="language-c">struct list</code> to
+      a pointer to the struct that contains it (the <code class="language-c">struct
+        person</code>).  These macros are used internally within
+      <tt>list.h</tt>: it is extremely rare that you will use them directly,
+      but it is interesting to see how they work: 
+      </p>
+
+      <pre><code class="language-c">
+      #ifndef offsetof
+      #define offsetof(TYPE, MEMBER) ((size_t) &amp; ((TYPE *)0)-&gt;MEMBER)
+      #endif
+
+      #define container_of(ptr, type, member)                            \
+        ({                                                         \
+          const typeof(((type *)0)-&gt;member) *__mptr = (ptr); \
+          (type *)((char *)__mptr - offsetof(type, member)); \
+        })
+      </code></pre>
+
+      <p>
+      The header file <tt>list.h</tt> defines a lot of functions; the most
+      common ones are:
+      </p>
+
+      <dl>
+        <dt class="ms-2"><tt>LIST_HEAD(name)</tt></dt>
+        <dd class="ms-4">Declare a list head variable called <tt>name</tt></dd>
+        
+        <dt class="ms-2"><tt>INIT_LIST_HEAD(name)</tt></dt>
+        <dd class="ms-4">Initialize a list head</dd>
+
+        <dt class="ms-2"><tt>list_add(new, head)</tt>
+        <dd class="ms-4">Add entry to to front of list (entry will be just after head)</dd>
+
+        <dt class="ms-2"><tt>list_add_tail(new, head)</tt>
+        <dd class="ms-4">Add entry to to back of list</dd>
+
+        <dt class="ms-2"><tt>list_del(entry)</tt>
+        <dd class="ms-4">Delete entry from list</dd>
+
+        <dt class="ms-2"><tt>list_emptry(head)</tt>
+        <dd class="ms-4">Tests whether a list is empty</dd>
+
+        <dt class="ms-2"><tt>list_first_entry(ptr, type, member)</tt>
+        <dd class="ms-4">Get the first element from the list (the list is
+        expected not to be emtpy)</dd>
+
+        <dt class="ms-2"><tt>list_for_each_entry(pos, head, member)</tt></dt>
+        <dd class="ms-4">Iterate over a list of a given type</dd>
+
+        <dt class="ms-2"><tt>list_for_each_entry_safe(pos, n, head,
+          member)</tt></dt>
+        <dd class="ms-4">Iterate over list of given type safe against removal
+        of list entry</dd>
+      </dl>
+
+
+      <h1 class="display-5">Examples</h1>
+
+      <h1 class="display-6">Basic Usage</h1>
+
+      <p>
+      The following program shows the basic usage of a list.
+      </p>
+
+      <pre data-src="src/ex1.c" data-download-link class="line-numbers"></pre>
+
+      <h1 class="display-6">Implementing a Stack</h1>
+
+      <p>
+      The following program implements a stack:
+      </p>
+
+      <pre data-src="src/stack.c" data-download-link class="line-numbers"></pre>
+
+      <h1 class="display-6">Implementing a Queue</h1>
+
+      <p>
+      The following program implements a queue:
+      </p>
+
+      <pre data-src="src/queue.c" data-download-link class="line-numbers"></pre>
+
+    </div>
+
+    <!-- bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> 
+    <!-- prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/download-button/prism-download-button.min.js"></script> 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autolinker/prism-autolinker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/command-line/prism-command-line.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/file-highlight/prism-file-highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/keep-markup/prism-keep-markup.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
+
+  </body>
+</html>
