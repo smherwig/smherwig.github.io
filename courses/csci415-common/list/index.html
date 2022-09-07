@@ -21,12 +21,12 @@
 
       <p>
       The Linux kernel's implementation
-      of linked list is contained in a header file called <a
+      of a linked list is contained in a header file called <a
       href="src/list.h"><tt>list.h</tt></a>.  (The version linked is modified
       slightly to remove dependencies on other kernel headers so that the file
       can be used in userspace.)
       You can download the file to your projects'
-      source directory, and include it in your C files as:
+      source directory, and include it in a C source file as:
       </p>
 
       <pre><code class="language-c">
@@ -77,8 +77,8 @@
       </code></pre>
 
       <p>
-      In other words, it represents a node in a doubly-linked list.  The head
-      of the list is simply a bare
+      In other words, it represents a node in a doubly-linked list.  For the head
+      of the list we simply use a bare
       <code class="language-c">struct list_head</code>:
       one that is not embedded in a 
       <code class="language-c">struct person</code>.
@@ -86,9 +86,9 @@
 
       <p>
       The linked list implementation relies on a few clever macros to go from
-      the pointer to the embedded <code class="language-c">struct list</code> to
-      a pointer to the struct that contains it (the <code class="language-c">struct
-        person</code>).  These macros are used internally within
+      a "pointer to the embedded <code class="language-c">struct list</code>" to
+      a "pointer to the struct that contains it" (the 
+      <code class="language-c">struct person</code>).  These macros are used internally within
       <tt>list.h</tt>: it is extremely rare that you will use them directly,
       but it is interesting to see how they work: 
       </p>
@@ -118,10 +118,10 @@
         <dd class="ms-4">Initialize a list head</dd>
 
         <dt class="ms-2"><tt>list_add(new, head)</tt>
-        <dd class="ms-4">Add entry to to front of list (entry will be just after head)</dd>
+        <dd class="ms-4">Add entry  to front of list (entry will be just after head)</dd>
 
         <dt class="ms-2"><tt>list_add_tail(new, head)</tt>
-        <dd class="ms-4">Add entry to to back of list</dd>
+        <dd class="ms-4">Add entry to back of list</dd>
 
         <dt class="ms-2"><tt>list_del(entry)</tt>
         <dd class="ms-4">Delete entry from list</dd>
@@ -131,6 +131,10 @@
 
         <dt class="ms-2"><tt>list_first_entry(ptr, type, member)</tt>
         <dd class="ms-4">Get the first element from the list (the list is
+        expected not to be emtpy)</dd>
+
+        <dt class="ms-2"><tt>list_last_entry(ptr, type, member)</tt>
+        <dd class="ms-4">Get the last element from the list (the list is
         expected not to be emtpy)</dd>
 
         <dt class="ms-2"><tt>list_for_each_entry(pos, head, member)</tt></dt>
